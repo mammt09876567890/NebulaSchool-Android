@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Portfolio CV</title>
+  <style>
+    :root {
+      --bg: #0e0e14;
+      --panel: #171724;
+      --text: #f8f9ff;
+      --accent-1: #ff2ea6;
+      --accent-2: #15f5ba;
+      --accent-3: #ffd500;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: radial-gradient(circle at top left, #31244f, var(--bg));
+      color: var(--text);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    main {
+      width: min(920px, 100%);
+      background: linear-gradient(160deg, #1f1735, var(--panel));
+      border: 1px solid #ffffff1a;
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 20px 60px #00000066;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      line-height: 1.1;
+    }
+
+    .subtitle {
+      margin: 10px 0 24px;
+      color: #d8dcff;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: #ffffff08;
+      border: 1px solid #ffffff20;
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .label {
+      display: inline-block;
+      font-weight: 700;
+      margin-bottom: 12px;
+      border-radius: 999px;
+      padding: 6px 12px;
+      color: #0f1120;
+      background: var(--accent-3);
+    }
+
+    .letter .label { background: var(--accent-2); }
+
+    .picker {
+      width: 100%;
+      border: 2px dashed #ffffff55;
+      border-radius: 12px;
+      padding: 12px;
+      background: #00000020;
+      color: var(--text);
+    }
+
+    .picker::file-selector-button {
+      border: 0;
+      border-radius: 10px;
+      padding: 8px 12px;
+      background: var(--accent-1);
+      color: #fff;
+      margin-right: 10px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .meta {
+      margin: 12px 0 0;
+      color: #cfd3ff;
+      font-size: 0.95rem;
+      min-height: 1.3em;
+    }
+
+    .preview {
+      margin-top: 14px;
+      width: 100%;
+      height: 360px;
+      border: 1px solid #ffffff33;
+      border-radius: 12px;
+      background: #090a10;
+    }
+
+    .banner {
+      margin-bottom: 18px;
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .footer {
+      margin-top: 18px;
+      color: #cfd3ff;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="banner">CV europeo + lettera di presentazione</div>
+    <h1>Portfolio PDF</h1>
+    <p class="subtitle">Carica i tuoi PDF e visualizzali subito in un layout minimalista dai colori vivaci.</p>
+
+    <section class="grid">
+      <article class="card cv">
+        <span class="label">CV Europeo</span>
+        <input id="cvInput" class="picker" type="file" accept="application/pdf">
+        <p id="cvMeta" class="meta">Nessun file selezionato</p>
+        <iframe id="cvPreview" class="preview" title="Anteprima CV"></iframe>
+      </article>
+
+      <article class="card letter">
+        <span class="label">Lettera di presentazione</span>
+        <input id="letterInput" class="picker" type="file" accept="application/pdf">
+        <p id="letterMeta" class="meta">Nessun file selezionato</p>
+        <iframe id="letterPreview" class="preview" title="Anteprima lettera"></iframe>
+      </article>
+    </section>
+
+    <p class="footer">I file restano nel browser e non vengono caricati su server.</p>
+  </main>
+
+  <script>
+    function formatSize(bytes) {
+      if (!bytes) return '0 KB';
+      return `${(bytes / 1024).toFixed(1)} KB`;
+    }
+
+    function bindPdfPreview(inputId, metaId, previewId) {
+      const input = document.getElementById(inputId);
+      const meta = document.getElementById(metaId);
+      const preview = document.getElementById(previewId);
+
+      input.addEventListener('change', () => {
+        const file = input.files?.[0];
+
+        if (!file) {
+          meta.textContent = 'Nessun file selezionato';
+          preview.removeAttribute('src');
+          return;
+        }
+
+        if (file.type !== 'application/pdf') {
+          meta.textContent = 'Formato non valido: carica un PDF';
+          input.value = '';
+          preview.removeAttribute('src');
+          return;
+        }
+
+        meta.textContent = `${file.name} • ${formatSize(file.size)}`;
+        preview.src = URL.createObjectURL(file);
+      });
+    }
+
+    bindPdfPreview('cvInput', 'cvMeta', 'cvPreview');
+    bindPdfPreview('letterInput', 'letterMeta', 'letterPreview');
+  </script>
+</body>
+</html>
